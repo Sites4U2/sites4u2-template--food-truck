@@ -1,0 +1,190 @@
+
+# Food Truck Website - AI Agent Instructions
+
+## Overview
+This food truck website uses a centralized configuration system in `src/config/siteImages.ts` that contains ALL variable content and design tokens. This makes updates simple and consistent.
+
+## Key Principle
+**NEVER hardcode any content or design values in components.** Everything must come from `siteConfig` in the configuration file.
+
+## Design System Usage
+
+### 1. Typography Changes
+**Location:** `siteConfig.design.typography`
+
+**Font Family Updates:**
+- To change fonts: Update the `fonts` object with new Google Font details
+- Each font has: `name`, `googleFontUrl`, `fallback`, `tailwindClass`
+- Remember to update the corresponding Google Font link in index.html
+
+**Font Size Updates:**
+- Use the predefined `scale` object for consistent sizing
+- Component-specific typography is defined in `typography.components`
+
+**Example User Request:** "Change the heading font to Montserrat"
+**Action:** 
+1. Update `siteConfig.design.typography.fonts.heading.name` to "Montserrat"
+2. Update `googleFontUrl` to the Montserrat Google Fonts URL
+3. Update `tailwindClass` to "font-montserrat"
+4. Add the font link to index.html head section
+
+### 2. Color Palette Changes
+**Location:** `siteConfig.design.colors`
+
+**Color System:**
+- Primary colors: Main brand colors (orange, blue)
+- Neutral colors: Grays and basic colors
+- Semantic colors: Success, warning, error, info
+- All colors use HSL values for consistency
+
+**Example User Request:** "Change the primary orange to a red color"
+**Action:** Update `siteConfig.design.colors.primary.orange` to the new HSL red value (e.g., "0 100% 50%")
+
+### 3. Typography Component Styling
+**Location:** `siteConfig.design.typography.components`
+
+**Predefined Component Styles:**
+- `hero`: Title and subtitle styles for hero sections
+- `section`: Title and subtitle for main sections
+- `card`: Title and description for card components
+
+**Example User Request:** "Make section titles larger"
+**Action:** Update `siteConfig.design.typography.components.section.title.size` values
+
+## Content Updates
+
+### 4. Business Information Changes
+**Location:** `siteConfig.business`
+- Business name, tagline, description
+- Contact info (email, phone, address)
+- Founded year
+
+**Example User Request:** "Change the phone number to (555) 999-FOOD"
+**Action:** Update `siteConfig.business.phone` and `siteConfig.business.phoneLink`
+
+### 5. Menu Updates
+**Location:** `siteConfig.menu`
+- Menu items organized by category (mains, sides, drinks)
+- Each item has: name, price, description
+- Corresponding images in `siteConfig.images.menu`
+
+**Example User Request:** "Add a new burger called 'BBQ Beast' for $14"
+**Action:** Add to `siteConfig.menu.mains` array and add image to `siteConfig.images.menu.mains`
+
+### 6. Schedule Changes
+**Location:** `siteConfig.schedule`
+- Weekly schedule with day, location, time
+
+**Example User Request:** "We're now at City Hall on Wednesdays"
+**Action:** Update the Wednesday entry in `siteConfig.schedule`
+
+### 7. Testimonials
+**Location:** `siteConfig.testimonials`
+- Customer reviews with name, review text, rating
+
+**Example User Request:** "Add a new 5-star review from Tom K."
+**Action:** Add new object to `siteConfig.testimonials` array
+
+### 8. Image Updates
+**Location:** `siteConfig.images`
+- All image paths organized by section
+- Hero, about, menu items, gallery
+
+**Example User Request:** "Change the hero image"
+**Action:** Update `siteConfig.images.hero` path
+
+### 9. Links & CTAs
+**Location:** `siteConfig.links`
+- Order online link, phone link, email link
+
+**Example User Request:** "Update the online ordering link"
+**Action:** Update `siteConfig.links.orderOnline`
+
+## Design Token Implementation
+
+### Using Design Tokens in Components
+Components should reference design tokens like this:
+
+```typescript
+import { siteConfig } from '@/config/siteImages';
+
+// Colors (using Tailwind classes with HSL values)
+const orangeButton = `bg-[hsl(${siteConfig.design.colors.primary.orange})]`;
+
+// Typography
+const heroTitle = `${siteConfig.design.typography.fonts.heading.tailwindClass} text-4xl md:text-6xl font-bold`;
+
+// Using component-specific typography
+const { hero } = siteConfig.design.typography.components;
+const titleClasses = `${hero.title.font} ${hero.title.size.mobile} md:${hero.title.size.desktop} ${hero.title.weight} ${hero.title.color}`;
+```
+
+### Google Fonts Integration
+When changing fonts:
+1. Update the font configuration in `siteConfig.design.typography.fonts`
+2. Add the Google Font link to `index.html`:
+```html
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+```
+3. Update `tailwind.config.ts` to include the new font family:
+```js
+fontFamily: {
+  'montserrat': ['Montserrat', 'sans-serif'],
+}
+```
+
+## Component Usage
+All components import and use `siteConfig`:
+```typescript
+import { siteConfig } from '@/config/siteImages';
+
+// Content usage
+{siteConfig.business.name}
+{siteConfig.menu.mains.map(item => ...)}
+
+// Design token usage
+className={`text-[hsl(${siteConfig.design.colors.primary.orange})]`}
+```
+
+## Important Notes
+- Always update the config file, never hardcode content or design values in components
+- When adding menu items, remember to add corresponding images
+- Phone numbers should be updated in both display format and link format
+- All colors must be in HSL format for consistency
+- Font changes require updates in config, index.html, and tailwind.config.ts
+- Maintain the object structure when making changes
+- Test that all references work after updates
+
+## Common Update Patterns
+
+### Adding Menu Item:
+1. Add item object to appropriate `siteConfig.menu` category
+2. Add corresponding image path to `siteConfig.images.menu` category
+3. Ensure image file exists or provide placeholder
+
+### Changing Color Scheme:
+1. Update `siteConfig.design.colors` with new HSL values
+2. Test across all components that use these colors
+3. Ensure sufficient contrast for accessibility
+
+### Changing Typography:
+1. Update font configuration in `siteConfig.design.typography.fonts`
+2. Add Google Font link to index.html
+3. Update tailwind.config.ts font family
+4. Test typography across all components
+
+### Schedule Updates:
+1. Modify `siteConfig.schedule` array
+2. Keep day, location, time structure consistent
+
+### Content Changes:
+1. Update `siteConfig.about` for story content
+2. Update `siteConfig.business` for taglines/descriptions
+3. Update `siteConfig.seo` if meta information changes
+
+## File Structure
+- Configuration: `src/config/siteImages.ts`
+- Main Component: `src/components/FoodTruckLandingPage.tsx`
+- Styling: `src/index.css`, `tailwind.config.ts`, `index.html` (for Google Fonts)
+
+Remember: The goal is to make content AND design updates as simple as possible by keeping everything in one organized configuration file with a comprehensive design system.
